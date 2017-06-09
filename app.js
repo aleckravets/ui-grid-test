@@ -16,56 +16,6 @@ const columnWidthParamName = "columnWidth";
 const columnAutoWidthParamName = "columnAutoWidth";
 const minColumnWidth = 95;
 
-app.run(function($templateCache) {
-    $templateCache.put('ui-grid/uiGridViewport',
-        `<div role=\"rowgroup\" class=\"ui-grid-viewport\" ng-style=\"colContainer.getViewportStyle()\">
-            <div class=\"ui-grid-canvas\" viewport-renderer ng-if="rowContainer.renderedRows.length">
-                <!--<div ng-repeat=\"(rowRenderIndex, row) in rowContainer.renderedRows track by $index\" class=\"ui-grid-row\" ng-style=\"Viewport.rowStyle(rowRenderIndex)\">-->
-                    <!--<div role=\"row\" ui-grid-row=\"row\" row-render-index=\"rowRenderIndex\"></div>-->
-                <!--</div>-->
-            </div>
-        </div>`
-    );
-
-});
-
-app.directive("viewportRenderer", function($compile) {
-   return {
-       controller: function($scope) {
-           // console.log($scope, $scope.rowContainer);
-           // $scope.$watch(() => $scope.rowContainer, rowContainer => {
-           //    if (rowContainer) {
-           //        console.log(rowContainer);
-           //    }
-           // });
-       },
-       link: function($scope, iElem, attrs) {
-           // $scope.$watch(() => $scope.rowContainer.renderedRows, val => {
-           //     compile();
-           // });
-
-           setTimeout(function() {
-               compile();
-           })
-
-
-           function compile() {
-               for (var rowRenderIndex in $scope.rowContainer.renderedRows) {
-                   var row = $scope.rowContainer.renderedRows[rowRenderIndex];
-                   const rowElement = angular.element(`
-                        <div class="ui-grid-row" ng-style1="Viewport.rowStyle(${rowRenderIndex})">
-                            <div role="row" ui-grid-row="rowContainer.renderedRows[${rowRenderIndex}]" row-render-index="${rowRenderIndex}"></div>
-                        </div>`);
-                   iElem.append($compile(rowElement)($scope));
-               }
-
-           }
-       }
-
-   }
-});
-
-
 app.controller('MainCtrl', ['$scope', '$http', '$q', function ($scope, $http, $q) {
     const groups = [];
 
@@ -121,7 +71,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$q', function ($scope, $http, $q
 
             $scope.groupHeaderColContainerName =  pinnedColumns.length > 0 ? "left" : "body";
 
-
             $scope.gridOptions = {
                 enablePinning: true,
                 enableSorting: false,
@@ -132,7 +81,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$q', function ($scope, $http, $q
                 enableGridMenu: true,
                 enableRowSelection: false,
                 rowHeight: 27,
-                virtualizationThreshold: 1000,
+                // virtualizationThreshold: 100,
                 typeLayout,
                 rowTemplate: `
                 <div ng-if="row.entity.isGroupHeader && colContainer.name === row.grid.appScope.groupHeaderColContainerName" class="group-header-row level-{{row.entity.level}}" ng-init="row.entity.entity = {}">
@@ -174,10 +123,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$q', function ($scope, $http, $q
             $http.get('new-business.json')
                 .then(response => {
                     const data = response.data;
-                    $scope.gridOptions.data = getGridData(data.value.slice(0, 377));
+                    $scope.gridOptions.data = getGridData(data.value.slice(0, 150));
                 });
         });
 }]);
+
 
 function cellClass(grid, row, col, rowRenderIndex, colRenderIndex) {
     const entity = row.entity.entity;

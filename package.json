@@ -4,12 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "lite": "lite-server"
+    "compile": "babel app.js --out-file app-compiled.js",
+    "start": "lite-server"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "angular-ui-grid": "3.2.11",
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "bootstrap": "3.3.6",
     "lite-server": "^2.3.0"
   }
