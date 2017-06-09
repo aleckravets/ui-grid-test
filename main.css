@@ -9,23 +9,23 @@
     background-color: #fdfdfd;
 }
 
-   .ui-grid-row:nth-child(odd) .ui-grid-cell.row-type-calculated,
-   .ui-grid-row:nth-child(even) .ui-grid-cell.row-type-calculated{
+   .ui-grid-row:nth-child(odd) .row-type-calculated .ui-grid-cell,
+   .ui-grid-row:nth-child(even) .row-type-calculated .ui-grid-cell{
        background-color: #f3f3f3;
    }
 
-   .ui-grid-row:nth-child(odd) .ui-grid-cell.row-type-input,
-   .ui-grid-row:nth-child(even) .ui-grid-cell.row-type-input{
+   .ui-grid-row:nth-child(odd) .row-type-input .ui-grid-cell,
+   .ui-grid-row:nth-child(even).row-type-input .ui-grid-cell{
        background-color: lightyellow;
    }
 
-   .ui-grid-row:nth-child(odd) .ui-grid-cell.row-type-external,
-   .ui-grid-row:nth-child(even) .ui-grid-cell.row-type-external {
+   .ui-grid-row:nth-child(odd) .row-type-external .ui-grid-cell,
+   .ui-grid-row:nth-child(even) .row-type-external .ui-grid-cell{
        background-color: #ccddee;
    }
 
-   .ui-grid-row:nth-child(odd) .ui-grid-cell.row-type-total,
-   .ui-grid-row:nth-child(even) .ui-grid-cell.row-type-total{
+   .ui-grid-row:nth-child(odd) .row-type-total .ui-grid-cell,
+   .ui-grid-row:nth-child(even) .row-type-total .ui-grid-cell{
        background-color: #f3f3f3;
        font-weight: bold;
    }

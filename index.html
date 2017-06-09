@@ -1,12 +1,12 @@
 <!doctype html>
 <html ng-app="app">
 <head>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-touch.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-touch.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>
+    <!--<script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>-->
+    <!--<script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>-->
+    <!--<script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>-->
     <script src="node_modules/angular-ui-grid/ui-grid.js"></script>
     <link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css" type="text/css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" type="text/css">
@@ -14,12 +14,23 @@
 </head>
 <body>
 
-<div ng-controller="MainCtrl" class="container-fluid">
+<div ng-controller="MainCtrl as c" class="container-fluid">
     <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
 
     <div class="row">
         <div class="col-lg-10">
             <div id="grid1" ng-if="gridOptions" ui-grid="gridOptions" ui-grid-pinning ui-grid-resize-columns class="grid"></div>
+        </div>
+    </div>
+
+
+    <div ng-if="c.changeData">
+        <button ng-click="c.changeData(0, 5)" type="button">Data 1</button>
+        <button ng-click="c.changeData(5, 10)" type="button">Data 2</button>
+        <button ng-click="c.changeData(10, 20)" type="button">Data 3</button>
+
+        <div ng-repeat="e in c.data track by $index" log-dom-creation>
+            <div ng-bind="e.Ref"></div>
         </div>
     </div>
 </div>
