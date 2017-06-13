@@ -214,43 +214,75 @@ app.directive(
     }
 );
 
-app.directive("staticRow", function($compile) {
+app.directive("staticRow", function($compile, $rootScope) {
 
-    const cache = {};
+    var columnsHtmlCache = {};
+    var removeColumnsWatcher;
 
     return {
-        // scope: false,
+        scope: false,
         link($scope, element, attrs) {
             console.log(`link ${$scope.rowRenderIndex}`);
 
-            const isVirtualizationEnabled = true;//$scope.colContainer.visibleRowCache.length > $scope.grid.options.virtualizationThreshold;
+            if (!removeColumnsWatcher) {
+                removeColumnsWatcher = $scope.$watchCollection(() => $scope.colContainer.renderedColumns, (newVal, oldVal) => {
+                    if (newVal.length !== oldVal.length) {
+                        columnsHtmlCache = {};
+                        $rootScope.$emit('renderedColumnsChanged');
 
-            const isLeftContainer = $scope.colContainer.name === 'left';
+                    }
 
-            if (!cache[$scope.colContainer.name]) {
-                let renderedColumns = isLeftContainer ? $scope.colContainer.renderedColumns.slice(0, 2) : $scope.colContainer.renderedColumns;
-                cache[$scope.colContainer.name] = getColsHtml(renderedColumns);
+                });
+                $rootScope.$on('$destroy', () => {
+                    removeColumnsWatcher();
+                    removeColumnsWatcher = undefined;
+                })
             }
 
-            const colsHtml = cache[$scope.colContainer.name];
+            const isVirtualizationEnabled = true;//$scope.colContainer.visibleRowCache.length > $scope.grid.options.virtualizationThreshold;
 
-            const classBinding = (isVirtualizationEnabled ? '' : '::') + 'row.entity.classes';
+            render();
 
-            var rowHtml = `<div ng-if="!row.entity.isGroupHeader" ng-class="${classBinding}">${colsHtml}</div>`;
+            $rootScope.$on('renderedColumnsChanged', () => render());
 
-            if (isLeftContainer) {
-                rowHtml += `
+            var innerScope;
+
+            function render() {
+
+                const isLeftContainer = $scope.colContainer.name === 'left';
+
+                if (!columnsHtmlCache[$scope.colContainer.name]) {
+                    let renderedColumns = isLeftContainer ? $scope.colContainer.renderedColumns.slice(0, 2) : $scope.colContainer.renderedColumns;
+                    columnsHtmlCache[$scope.colContainer.name] = getColsHtml(renderedColumns);
+                }
+
+                const colsHtml = columnsHtmlCache[$scope.colContainer.name];
+
+                const classBinding = (isVirtualizationEnabled ? '' : '::') + 'row.entity.classes';
+
+                var rowHtml = `<div ng-if="!row.entity.isGroupHeader" ng-class="${classBinding}">${colsHtml}</div>`;
+
+                if (isLeftContainer) {
+                    rowHtml += `
                     <div ng-if="row.entity.isGroupHeader" class="group-header-row level-{{row.entity.level}}">
                         <div class="ui-grid-cell group-header-name">{{row.entity.groupName}}</div>
                         ${colsHtml}
                     </div>`;
+                }
+
+                if (innerScope) {
+                    innerScope.$destroy();
+                    element.empty();
+                }
+
+                innerScope = $scope.$new();
+
+                const innerElement = angular.element(rowHtml);
+
+                element.append(innerElement);
+
+                $compile(innerElement)(innerScope);
             }
-
-            const innerElement = angular.element(rowHtml);
-
-            element.append(innerElement);
-
-            $compile(innerElement)($scope);
 
             function getColsHtml(renderedColumns) {
                 console.log(`compile columns html for ${$scope.colContainer.name}`);

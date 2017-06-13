@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "compile": "babel app.js --out-file app-compiled.js",
+    "build": "babel app.js --out-file app-compiled.js",
     "watch": "babel app.js --watch --out-file app-compiled.js",
     "start": "lite-server"
   },
